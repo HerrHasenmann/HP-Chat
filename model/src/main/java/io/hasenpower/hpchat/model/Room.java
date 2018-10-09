@@ -8,7 +8,8 @@ public class Room {
     private String name;
     private Set<User> users;
 
-    public Room() {
+    Room() {
+        users = new HashSet<>();
     }
 
     public String getName() {
@@ -27,26 +28,18 @@ public class Room {
         this.users = users;
     }
 
-    public void addUser(User user) {
-        if(users == null) {
-            users = new HashSet<>();
-        }
+    public void login(User user) {
         users.add(user);
+        sendMessageToOther(new Message(user.getName() + " joined the room", User.SERVER));
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Room room = (Room) o;
-
-        return name.equals(room.name);
+    public void logout(User user) {
+        users.removeIf(userInSet -> userInSet.getUuid().equals(user.getUuid()));
+        sendMessageToOther(new Message(user.getName() + " left the room", User.SERVER));
     }
 
-    @Override
-    public int hashCode() {
-        return name.hashCode();
+    public void sendMessageToOther(Message message) {
+        users.stream().filter(user -> !user.getUuid().equals(message.getSender().getUuid())).forEach(user -> user.sendMessage(message));
     }
 
     @Override

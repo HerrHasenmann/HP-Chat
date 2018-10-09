@@ -1,14 +1,44 @@
 package io.hasenpower.hpchat.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+
 public class User {
 
-    private String name;
+    private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
+    static final User SERVER = new User("Server");
 
-    public User() {
+    private String uuid;
+    private String name;
+    private WebSocketSession session;
+
+    User() {
     }
 
     public User(String name) {
         this.name = name;
+    }
+
+    public void sendMessage(Message message) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String json = objectMapper.writeValueAsString(message);
+            session.sendMessage(new TextMessage(json));
+        } catch (java.io.IOException e) {
+            LOGGER.error("Could not parse to json string. " + message, e);
+        }
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public String getName() {
@@ -19,25 +49,20 @@ public class User {
         this.name = name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        User user = (User) o;
-
-        return name.equals(user.name);
+    public void setSession(WebSocketSession session) {
+        this.session = session;
     }
 
-    @Override
-    public int hashCode() {
-        return name.hashCode();
+    @JsonIgnore
+    public WebSocketSession getSession() {
+        return session;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "uuid='" + uuid + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

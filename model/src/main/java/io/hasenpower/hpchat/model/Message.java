@@ -1,5 +1,7 @@
 package io.hasenpower.hpchat.model;
 
+import java.time.Instant;
+
 public class Message {
 
     private long timestamp;
@@ -7,6 +9,12 @@ public class Message {
     private User sender;
 
     public Message() {
+    }
+
+    public Message(String text, User sender) {
+        this.text = text;
+        this.sender = sender;
+        this.timestamp = Instant.now().toEpochMilli();
     }
 
     public long getTimestamp() {
@@ -26,6 +34,7 @@ public class Message {
     }
 
     public User getSender() {
+
         return sender;
     }
 
