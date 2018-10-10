@@ -33,6 +33,7 @@ public class User {
         }
     }
 
+    @JsonInclude(Include.NON_NULL)
     public String getUuid() {
         return uuid;
     }
