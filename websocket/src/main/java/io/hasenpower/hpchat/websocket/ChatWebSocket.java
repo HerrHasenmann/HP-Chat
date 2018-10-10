@@ -33,6 +33,8 @@ public class ChatWebSocket extends TextWebSocketHandler{
     protected void handleTextMessage(WebSocketSession session, TextMessage textMessage) throws Exception {
         User user = CHAT.getUser(String.valueOf(session.getAttributes().get("uuid")));
         Room room = CHAT.getRoom(String.valueOf(session.getAttributes().get("roomName")));
+        
+        //TODO remove uuid from message.user
         Message message = new Message(textMessage.getPayload(), user);
 
         room.sendMessageToOther(message);
