@@ -38,6 +38,11 @@ public class Room {
         sendMessageToOther(new Message(user.getName() + " left the room", User.SERVER));
     }
 
+    /**
+     * Send a given message to all users except the sender
+     *
+     * @param message Message to send to other users
+     */
     public void sendMessageToOther(Message message) {
         users.stream().filter(user -> !user.getUuid().equals(message.getSender().getUuid())).forEach(user -> user.sendMessage(message));
     }
